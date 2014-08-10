@@ -30,8 +30,8 @@
 		
 //POOL
 		var poolCoordinates = [
-	    new google.maps.LatLng(37.409484, -122.057228),
     	new google.maps.LatLng(37.409568, -122.056972),
+	    new google.maps.LatLng(37.409484, -122.057228),
     	new google.maps.LatLng(37.409337, -122.057150),
     	new google.maps.LatLng(37.409422, -122.056895)
  		 ];
@@ -86,14 +86,7 @@ function addTrees() {
 
 
 document.getElementById('reset').onclick = function() {
-//	poolPolygon.setMap(null)
-//	treeCircle.setMap(null)
-
-while(overlays[0])
-{
-  overlays.pop().setMap(null);
-}
-
+initialize()
 }
 
 document.getElementById('pool').onclick = function() {
