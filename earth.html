@@ -13,91 +13,231 @@
       #map-canvas { height: 100% }
 	  a:link, a:visited, a:hover {color: #FFFFFF;text-decoration: none;}
 }
+      #panel {
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        margin-left: -180px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+      }
   </style> 
       
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXb9hFn5BDt03utg5EIWLlS8EMoDheda0">
     </script>
     <script type="text/javascript">
-      function initialize() {
-        var mapOptions = {
-          center: new google.maps.LatLng(37.409468, -122.057036),
-          zoom: 17, 
-		  mapTypeId: google.maps.MapTypeId.SATELLITE
-        };
-        var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-		map.setTilt(0);
-		
-//POOL
-		var poolCoordinates = [
-    	new google.maps.LatLng(37.409568, -122.056972),
-	    new google.maps.LatLng(37.409484, -122.057228),
-    	new google.maps.LatLng(37.409337, -122.057150),
-    	new google.maps.LatLng(37.409422, -122.056895)
- 		 ];
-		 
-	  poolPolygon = new google.maps.Polygon({
-		paths: poolCoordinates,
-		strokeColor: '#FF0000',
-		strokeOpacity: 0.8,
-		strokeWeight: 2,
-		fillColor: '#FF0000',
-		fillOpacity: 0.35
-	  });
+var overlay;
+HyperOverlay.prototype = new google.maps.OverlayView();
+
+function initialize() {
+	var mapOptions = {
+	  center: new google.maps.LatLng(37.409468, -122.057036),
+	  zoom: 17, 
+	  mapTypeId: google.maps.MapTypeId.SATELLITE
+	};
+	var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+	map.setTilt(0);
+	
+	var treeArray = [];
+	var treeNumber = 0;
+	
+	// FOR THE OVERLAY
+	// swBound = PRODUCT_LL_CORNER_LAT PRODUCT_LL_CORNER_LON 
+	var swBound = new google.maps.LatLng(43.2442471, -83.9622960);
+	// neBound =     PRODUCT_UR_CORNER_LAT PRODUCT_UR_CORNER_LON 
+	var neBound = new google.maps.LatLng(44.2657237, -83.2276244);
+	var bounds = new google.maps.LatLngBounds(swBound, neBound);
+
+	var srcImage = 'http://nuterra.io/';
+	srcImage += 'hyperimages/EO1A0200302013150110KF_2013_150.png';
+	overlay = new HyperOverlay(bounds, srcImage, map);
+
 
 //TREEEEEES
-
-function addTrees() {
-	var treemap = {};
-	treemap['tree1'] = {
-	  center: new google.maps.LatLng(37.409326, -122.055683),
-	};
-	treemap['tree2'] = {
-	  center: new google.maps.LatLng(37.409186, -122.056296),
-	};
-	treemap['tree3'] = {
-	  center: new google.maps.LatLng(37.409703, -122.055543),
-	};
-	treemap['tree4'] = {
-	  center: new google.maps.LatLng(37.409121, -122.055392),
-	};
-	treemap['tree5'] = {
-	  center: new google.maps.LatLng(37.409107, -122.055269),
-	};
-	treemap['tree6'] = {
-	  center: new google.maps.LatLng(37.409807, -122.056362),
-	};
 	
-	  for (var tree in treemap) {
-		var treeOptions = {
-		  strokeColor: '#FF0000',
-		  strokeOpacity: 0.8,
-		  strokeWeight: 2,
-		  fillColor: '#FF0000',
-		  fillOpacity: 0.35,
-		  map: map,
-		  center: treemap[tree].center,
-		  radius: 10
+	function addTrees() {
+		var treemap = {};
+		treemap['tree1'] = {
+		  center: new google.maps.LatLng(37.409326, -122.055683),
 		};
+		treemap['tree2'] = {
+		  center: new google.maps.LatLng(37.409186, -122.056296),
+		};
+		treemap['tree3'] = {
+		  center: new google.maps.LatLng(37.409703, -122.055543),
+		};
+		treemap['tree4'] = {
+		  center: new google.maps.LatLng(37.409121, -122.055392),
+		};
+		treemap['tree5'] = {
+		  center: new google.maps.LatLng(37.409107, -122.055269),
+		};
+		treemap['tree6'] = {
+		  center: new google.maps.LatLng(37.409807, -122.056362),
+		};
+		
+		for (var tree in treemap) {
+			var treeOptions = {
+			  strokeColor: '#FF0000',
+			  strokeOpacity: 0.8,
+			  strokeWeight: 2,
+			  fillColor: '#FF0000',
+			  fillOpacity: 0.35,
+			  map: map,
+			  center: treemap[tree].center,
+			  radius: 10
+			}; // end treeOptions
 		// Add the circle for the trees to the map.
 		treeCircle = new google.maps.Circle(treeOptions);
-	  }
+		
+		} // end for loop
+	} // end addTrees
+
+		
+	// ON CLICK
+	//Add listener
+	google.maps.event.addListener(map, "click", function (event) {
+		var latitude = event.latLng.lat();
+		var longitude = event.latLng.lng();
+		// console.log( latitude + ', ' + longitude );
+	
+		treeNumber++;
+	
+	//    tree = new google.maps.Circle({map: map,
+		treeArray[treeNumber] = new google.maps.Circle({map: map,
+			radius: 10,
+			center: event.latLng,
+			fillColor: '#777',
+			fillOpacity: 0.1,
+			strokeColor: '#AA0000',
+			strokeOpacity: 0.8,
+			strokeWeight: 2,
+			draggable: false,    // Dragable
+			editable: false      // Resizable
+	}); // end addListener
+		
+// treeArray.push({x: latitude, y: longitude, z: treeNumber});
+// treeArray.push(tree);
+		
+	google.maps.event.addListener(treeArray[treeNumber], "click", function( event ){
+			//This needs to point to the real object, NOT the last object
+			treeArray[treeNumber].setMap(null);
+			treeNumber--;
+			console.log( "test" );
+	}); // end addListener
+
+
+	}); //end addListener
+
+
+// BUTTONS
+	document.getElementById('reset').onclick = function() {
+		initialize()
+	}
+
+	document.getElementById('trees').onclick = function() {
+		addTrees()
+	}
+	
+
+} // End INITIALIZE
+	  
+google.maps.event.addDomListener(window, 'load', initialize);
+
+//OVERLAY CONSTRUCTOR
+function HyperOverlay(bounds, image, map) {
+
+  // Initialize all properties.
+  this.bounds_ = bounds;
+  this.image_ = image;
+  this.map_ = map;
+
+  // Define a property to hold the image's div. We'll
+  // actually create this div upon receipt of the onAdd()
+  // method so we'll leave it null for now.
+  this.div_ = null;
+
+  // Explicitly call setMap on this overlay.
+  this.setMap(map);
+}
+
+/**
+ * onAdd is called when the map's panes are ready and the overlay has been
+ * added to the map.
+ */
+HyperOverlay.prototype.onAdd = function() {
+
+  var div = document.createElement('div');
+  div.style.borderStyle = 'none';
+  div.style.borderWidth = '0px';
+  div.style.position = 'absolute';
+
+  // Create the img element and attach it to the div.
+  var img = document.createElement('img');
+  img.src = this.image_;
+  img.style.width = '100%';
+  img.style.height = '100%';
+  img.style.position = 'absolute';
+  div.appendChild(img);
+
+  this.div_ = div;
+
+  // Add the element to the "overlayLayer" pane.
+  var panes = this.getPanes();
+  panes.overlayLayer.appendChild(div);
+};
+
+HyperOverlay.prototype.draw = function() {
+
+  // We use the south-west and north-east
+  // coordinates of the overlay to peg it to the correct position and size.
+  // To do this, we need to retrieve the projection from the overlay.
+  var overlayProjection = this.getProjection();
+
+  // Retrieve the south-west and north-east coordinates of this overlay
+  // in LatLngs and convert them to pixel coordinates.
+  // We'll use these coordinates to resize the div.
+  var sw = overlayProjection.fromLatLngToDivPixel(this.bounds_.getSouthWest());
+  var ne = overlayProjection.fromLatLngToDivPixel(this.bounds_.getNorthEast());
+
+  // Resize the image's div to fit the indicated dimensions.
+  var div = this.div_;
+  div.style.left = sw.x + 'px';
+  div.style.top = ne.y + 'px';
+  div.style.width = (ne.x - sw.x) + 'px';
+  div.style.height = (sw.y - ne.y) + 'px';
+};
+
+// The onRemove() method will be called automatically from the API if
+// we ever set the overlay's map property to 'null'.
+HyperOverlay.prototype.onRemove = function() {
+  this.div_.parentNode.removeChild(this.div_);
+  this.div_ = null;
+};
+
+HyperOverlay.prototype.toggle = function() {
+  if (this.div_) {
+    if (this.div_.style.visibility == 'hidden') {
+      this.show();
+    } else {
+      this.hide();
     }
+  }
+};
+
+HyperOverlay.prototype.toggleDOM = function() {
+  if (this.getMap()) {
+    // Note: setMap(null) calls OverlayView.onRemove()
+    this.setMap(null);
+  } else {
+    this.setMap(this.map_);
+  }
+};
 
 
-document.getElementById('reset').onclick = function() {
-initialize()
-}
-
-document.getElementById('pool').onclick = function() {
-	poolPolygon.setMap(map)
-}
-
-document.getElementById('trees').onclick = function() {
-	addTrees()
-}
-      }
-      google.maps.event.addDomListener(window, 'load', initialize);
     </script>
     
 
@@ -107,6 +247,12 @@ document.getElementById('trees').onclick = function() {
   
 </head>
 <body bgcolor="#000000">
+<!-- [START region_toolbar] -->
+<!-- Add an input button to initiate the toggle method on the overlay. -->
+    <div id ="panel">
+      <input type="button" value="Toggle visibility" onclick="overlay.toggle();"></input>
+      <input type="button" value="Toggle DOM attachment" onclick="overlay.toggleDOM();"></input>
+    </div>
 <table border="0">
     <tbody style="color: #F6F6F6; font-family: Gotham, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">
       <tr>
@@ -132,9 +278,6 @@ document.getElementById('trees').onclick = function() {
         <td width="133"><p>
           <input type="button" name="trees" id="trees" value="Count Trees">
           
-          </p>
-          <p>
-            <input type="button" name="pool" id="pool" value="Detect Pool">
           </p>
           <p>
             <input type="button" name="reset" id="reset" value="Reset">
