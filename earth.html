@@ -10,19 +10,17 @@
   <style type="text/css">
       html { height: 80% }
       body { height: 100%; margin: 0; padding: 0 }
-      #map-canvas { height: 100% }
-	  a:link, a:visited, a:hover {color: #FFFFFF;text-decoration: none;}
+	  a:link, a:visited, a:hover {color: #FFFFFF; text-decoration: none;}
+      #map-canvas { 
+		  height: 100%;
+	  }
+      #panel { 
+		  position: absolute; top: 50px; right: 10px; z-index: 99; 
+	  }
+		  
+	  
 }
-      #panel {
-        position: absolute;
-        top: 5px;
-        left: 50%;
-        margin-left: -180px;
-        z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
-      }
+
   </style> 
       
     <script type="text/javascript"
@@ -248,43 +246,21 @@ HyperOverlay.prototype.toggleDOM = function() {
 </head>
 <body bgcolor="#000000">
 <!-- [START region_toolbar] -->
-<!-- Add an input button to initiate the toggle method on the overlay. -->
-    <div id ="panel">
-      <input type="button" value="Toggle visibility" onclick="overlay.toggle();"></input>
-      <input type="button" value="Toggle DOM attachment" onclick="overlay.toggleDOM();"></input>
-    </div>
-<table border="0">
-    <tbody style="color: #F6F6F6; font-family: Gotham, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">
-      <tr>
-        <td width="60"><a href="index.html"><img src="nuTerraLogo-invert.png" width="60" height="60" alt=""/></a></td>
-        <td width="60" style="text-align: center"><p><a href="earth.html">Earth</a></p></td>
-        <td width="60" style="text-align: center"><a href="water.html">Water</a></td>
-        <td width="60" style="text-align: center"><a href="urban.html">Searchable</a></td>
-        <td width="60" style="text-align: center"><a href="technology.html">Technology</a></td>
-        <td width="60" style="text-align: center"><a href="about.html">About us</a></td>
-      </tr>
 
-    </tbody>
-  </table>
+<div id="map-canvas">
+</div>
 
+<div id ="panel">
 <form>
-
-  <table height="439" border="0">
-    <tbody style="color: #F6F6F6; font-family: Gotham, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">
-      <tr>
-        <td width="594">
-              <div id="map-canvas"/>
-        </td>
-        <td width="133"><p>
-          <input type="button" name="trees" id="trees" value="Count Trees">
-          
-          </p>
-          <p>
-            <input type="button" name="reset" id="reset" value="Reset">
-          </p>                
-      </tr>
-    </tbody>
-  </table>
+	<p>
+  <input type="button" value="Go Hyperspectral" onclick="overlay.toggleDOM();"></input><br>
+  <input type="button" name="trees" id="trees" value="Count Trees"><br>
+  <input type="button" name="reset" id="reset" value="Reset"><br>
+  </p>
 </form>
+
+</div>
+ 
+
 
 </body></html>
